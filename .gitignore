@@ -1,0 +1,25 @@
+# Build artifacts
+dist/
+build/
+*.spec.bak
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs y output de pruebas
+last_run.log
+out/
+*.log
+
+# PDFs de prueba
+*.pdf
+
+# Tessdata local (no subir — son ~100 MB, se documenta cómo instalarlas)
+tessdata/
+
+# Entornos
+venv/
+.env

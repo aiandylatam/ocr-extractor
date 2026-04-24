@@ -1,0 +1,76 @@
+============================================================
+  OCR EXTRACTOR — INSTRUCCIONES DE USO
+============================================================
+
+¿QUÉ HACE ESTE PROGRAMA?
+  Convierte archivos PDF (incluso PDFs escaneados o de imagen)
+  en archivos de texto limpio, listos para analizar con IA
+  o para búsqueda y edición.
+
+------------------------------------------------------------
+CÓMO USARLO
+------------------------------------------------------------
+
+1. Abre la carpeta OCR_Extractor
+2. Haz doble clic en OCR_Extractor.exe
+3. Haz clic en "+ PDFs" para agregar archivos,
+   o en "Carpeta" para procesar una carpeta completa
+4. Elige el idioma del documento (español, inglés, etc.)
+5. Haz clic en "EXTRAER TEXTO"
+6. Cuando termine, haz clic en "Abrir salida"
+   para ver los archivos generados
+
+Los resultados se guardan en una carpeta llamada "out"
+junto a cada PDF original.
+
+------------------------------------------------------------
+OPCIONES PRINCIPALES
+------------------------------------------------------------
+
+  Idioma OCR     — Idioma del documento. Usa "spa+eng"
+                   si mezcla español e inglés.
+
+  DPI            — Calidad del escaneo. 300 es recomendado.
+                   Usa 150 o 200 si el procesamiento es lento.
+
+  Confianza mín. — Palabras con reconocimiento dudoso quedan
+                   marcadas como [?palabra?] en el texto.
+                   Valor más alto = más marcadores.
+
+  Marcadores     — Activa señales visuales en el texto para
+                   indicar tablas, imágenes y secciones de
+                   baja calidad que conviene revisar en el
+                   PDF original.
+
+------------------------------------------------------------
+ARCHIVOS GENERADOS
+------------------------------------------------------------
+
+  documento_limpio.txt   — Texto extraído y limpio
+  documento_skill_ref.md — Mismo texto en formato Markdown
+                           (para usar como contexto en IA)
+
+------------------------------------------------------------
+REQUISITOS
+------------------------------------------------------------
+
+  - Windows 10 u 11 (64 bits)
+  - No requiere instalar Python ni ningún otro programa
+  - El programa es autocontenido — solo necesitas esta carpeta
+
+------------------------------------------------------------
+SOPORTE
+------------------------------------------------------------
+
+  Si el programa no abre o da error, verifica que:
+  - Estás ejecutando OCR_Extractor.exe desde dentro de la
+    carpeta OCR_Extractor (no desde un acceso directo en
+    otro lugar)
+  - Tu antivirus no está bloqueando el ejecutable
+    (es normal que algunos antivirus alerten sobre .exe
+    generados con PyInstaller — puedes agregar la carpeta
+    como excepción)
+
+------------------------------------------------------------
+  Hecho con ♥ por @aiAndyLatam
+============================================================
