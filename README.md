@@ -1,108 +1,103 @@
 # OCR Extractor
 
-Extrae texto limpio de PDFs nativos, escaneados e híbridos. Diseñado para documentos legales y expedientes que se cargarán como contexto en sistemas de IA.
+Extract clean text from native, scanned, and hybrid PDFs. Built for legal documents and reports that need to be fed into AI systems as context.
 
-## Características
+**[⬇️ Download latest release](https://github.com/aiandylatam/ocr-extractor/releases/latest)** — no Python required, just unzip and run.
 
-- **PDF nativo, escaneado e híbrido** — detecta automáticamente qué páginas necesitan OCR
-- **Limpieza automática** — elimina firmas electrónicas, sellos, encabezados repetidos, marcas de agua y artefactos de OCR
-- **Marcadores de revisión** — señala tablas, imágenes y palabras de baja confianza para revisión humana
-- **Recuperación de tablas** — intenta extraer tablas con pdfplumber (páginas nativas) y Tesseract PSM6 (páginas escaneadas) antes de dejar un marcador `[TABLA]`
-- **Auto-rotación** — corrige páginas escaneadas con orientación incorrecta
-- **Bloque de instrucciones para IA** — cada archivo incluye un encabezado que advierte al modelo sobre secciones que pueden requerir verificación en el original
-- **Interfaz gráfica** — GUI moderna con barra de progreso y log en tiempo real
-- **CLI disponible** — también operable desde línea de comandos para automatización
+---
 
-## Estructura del proyecto
+## Features
 
-```
-ocr_tool/
-  ocr_gui.py            — Interfaz gráfica (entry point)
-  ocr_extractor.py      — Backend CLI y lógica de extracción
-  ocr_review.py         — Post-procesador: reportes de palabras inciertas
-  tessdata/             — Modelos de idioma para Tesseract
-    spa.traineddata
-    eng.traineddata
-    osd.traineddata
-  requirements.txt      — Dependencias Python
-  build_portable.spec   — Spec de PyInstaller para build portable
-  extract.bat           — Wrapper CLI para Windows (drag & drop)
-```
+- **Native, scanned & hybrid PDFs** — auto-detects which pages need OCR
+- **Automatic cleanup** — removes electronic signatures, court seals, repeated headers/footers, watermarks, and OCR artifacts
+- **Review markers** — flags tables, images, and low-confidence words for human review
+- **Table recovery** — tries pdfplumber (native pages) and Tesseract PSM6 (scanned pages) before falling back to a `[TABLE]` marker
+- **Auto-rotation** — corrects scanned pages with wrong orientation
+- **Dark GUI** — modern interface with progress bar and real-time log
+- **CLI available** — scriptable for batch automation
+- **Drag & drop** — drag PDFs onto `OCR_Extractor.exe` to pre-load them
 
-## Instalación (modo desarrollo)
+## Quick start (portable .exe)
+
+1. Download `OCR_Extractor_vX.X.X.zip` from [Releases](https://github.com/aiandylatam/ocr-extractor/releases/latest)
+2. Unzip anywhere
+3. Open `OCR_Extractor.exe`
+4. Add PDFs with the button or drag them onto the `.exe`
+5. Click **Extract Text**
+
+Output files are saved next to each PDF in an `out/` folder.
+
+## Dev setup
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Requiere Tesseract instalado en el sistema o en `tesseract/tesseract.exe` junto al script.
-Descarga: https://github.com/UB-Mannheim/tesseract/wiki
+Requires Tesseract installed or placed at `tesseract/tesseract.exe` next to the script.
+Download: https://github.com/UB-Mannheim/tesseract/wiki
 
-## Uso — GUI
+## GUI
 
 ```bash
 python ocr_gui.py
 ```
 
-## Uso — CLI
+## CLI
 
 ```bash
-python ocr_extractor.py documento.pdf
-python ocr_extractor.py carpeta_con_pdfs/ --lang spa --dpi 300
+python ocr_extractor.py document.pdf
+python ocr_extractor.py folder_with_pdfs/ --lang spa --dpi 300
 python ocr_extractor.py *.pdf --lang spa+eng --min-conf 60 --no-markers
 ```
 
-### Opciones CLI principales
+### CLI options
 
-| Opción | Default | Descripción |
+| Option | Default | Description |
 |---|---|---|
-| `--lang` | prompt | Idioma Tesseract: `spa`, `eng`, `spa+eng`, etc. |
-| `--dpi` | 300 | Resolución OCR. 150–200 para velocidad, 300–400 para calidad |
-| `--min-conf` | 50 | Umbral de confianza. Palabras por debajo quedan como `[?word?]` |
-| `--markers` | prompt | Activa marcadores de atención en el texto |
-| `--no-markers` | — | Desactiva marcadores |
-| `--fast` | — | Alias para `--dpi 200` |
-| `--workers` | auto | Workers paralelos para OCR (0 = auto) |
-| `--output-dir` | `./out` | Carpeta de salida |
-| `--extra-pattern` | — | Regex adicional a eliminar (repetible) |
+| `--lang` | prompt | Tesseract language: `spa`, `eng`, `spa+eng`, etc. |
+| `--dpi` | 300 | OCR resolution. 150–200 for speed, 300–400 for quality |
+| `--min-conf` | 50 | Confidence threshold. Words below it are marked `[?word?]` |
+| `--markers` / `--no-markers` | prompt | Toggle attention markers in output |
+| `--fast` | — | Alias for `--dpi 200` |
+| `--workers` | auto | Parallel OCR workers |
+| `--output-dir` | `./out` | Output folder |
+| `--extra-pattern` | — | Extra regex pattern to strip (repeatable) |
 
-## Revisión de palabras inciertas
+## Uncertainty review
 
 ```bash
-python ocr_review.py out/documento_limpio.txt
+python ocr_review.py out/document_clean.txt
 ```
 
-Genera `out/documento_inciertas.txt` con todas las palabras marcadas como `[?word?]` agrupadas por página.
+Generates `out/document_uncertain.txt` with all `[?word?]` markers grouped by page.
 
-## Build portable (sin instalar Python)
+## Build portable (PyInstaller)
 
 ```bash
 pip install pyinstaller
-pyinstaller build_portable.spec
+pyinstaller --noconfirm build_portable.spec
 ```
 
-El resultado en `dist/OCR_Extractor/` es autocontenido. Copia esa carpeta a cualquier PC con Windows 10/11 y ejecuta `OCR_Extractor.exe`.
+Output in `dist/OCR_Extractor/` is self-contained. Copy that folder to any Windows 10/11 PC and run `OCR_Extractor.exe`.
 
-Para incluir Tesseract en el bundle: copia la carpeta de instalación de Tesseract como `tesseract/` junto a `build_portable.spec` antes del build.
+## Output files
 
-## Archivos generados por extracción
-
-| Archivo | Contenido |
+| File | Content |
 |---|---|
-| `[nombre]_limpio.txt` | Texto limpio con marcadores de atención |
-| `[nombre]_skill_ref.md` | Mismo texto en formato Markdown para contexto de IA |
+| `[name]_limpio.txt` | Clean text with attention markers |
+| `[name]_skill_ref.md` | Same text in Markdown format (ready for AI context) |
 
-## Marcadores en el texto de salida
+## Markers reference
 
-| Marcador | Significado |
+| Marker | Meaning |
 |---|---|
-| `[?palabra?]` | Palabra con confianza OCR baja — verificar en original |
-| `[TABLA]` | Tabla no capturada — revisar estructura en PDF |
-| `[TABLA capturada con pdfplumber]` | Tabla extraída como markdown |
-| `[IMAGEN]` | Imagen o gráfico en la página |
-| `[!] CONFIANZA OCR BAJA` | Página completa con OCR de baja calidad |
+| `[?word?]` | Low OCR confidence — verify in original |
+| `[TABLE]` | Table not captured — check structure in PDF |
+| `[TABLE captured with pdfplumber]` | Table extracted as markdown |
+| `[IMAGE]` | Image or graphic on page |
+| `[!] LOW OCR CONFIDENCE` | Full page with poor OCR quality |
 
-## Dependencias
+## Dependencies
 
 ```
 pymupdf>=1.23
@@ -111,3 +106,7 @@ pillow>=10.0
 pdfplumber>=0.10
 customtkinter>=5.2
 ```
+
+---
+
+*by Andrés M. · [@aiAndyLatam](https://github.com/aiandylatam)*
